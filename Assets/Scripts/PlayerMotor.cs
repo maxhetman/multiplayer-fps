@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerMotor : MonoBehaviour
 {
 
+    #region Variables
     [SerializeField] private Camera cam;
     [SerializeField] private float cameraRotationLimit = 85f;
 
@@ -16,7 +17,9 @@ public class PlayerMotor : MonoBehaviour
     private Vector3 _thrusterForce = Vector3.zero;
 
     private Rigidbody _rb;
+    #endregion
 
+    #region Unity
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -27,7 +30,9 @@ public class PlayerMotor : MonoBehaviour
         PerformMovement();
         PerformRotation();
     }
+    #endregion  
 
+    #region SetMoveVariables
     //gets rotational vector
     public void Rotate(Vector3 rot)
     {
@@ -51,7 +56,9 @@ public class PlayerMotor : MonoBehaviour
     {
         _thrusterForce = force;
     }
+    #endregion
 
+    #region ApplyMove
     private void PerformMovement()
     {
         if (_velocity != Vector3.zero)
@@ -77,8 +84,6 @@ public class PlayerMotor : MonoBehaviour
             cam.transform.localEulerAngles = new Vector3(_currentCameraRotationX, 0, 0);
         }
     }
-
-
-
+    #endregion
 
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(ConfigurableJoint))]
 public class PlayerController : MonoBehaviour
 {
-
+    #region Variables
     [SerializeField] private float _speed = 5f;
     [SerializeField] private float _lookSensitivity = 4f;
     [SerializeField] private float _thrusterForce = 1000f;
@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     private PlayerMotor _motor;
     private ConfigurableJoint _joint;
 
+    #endregion
+
+    #region Unity
     void Start()
     {
         _motor = GetComponent<PlayerMotor>();
@@ -68,6 +71,7 @@ public class PlayerController : MonoBehaviour
 
         _motor.ApplyThruster(thrusterForce);
     }
+#endregion
 
     private void SetJointSettings(float jSpring)
     {
