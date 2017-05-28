@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(WeaponManager))]
+[RequireComponent(typeof(Player))]
 public class PlayerShoot : NetworkBehaviour
 {
 
@@ -48,9 +49,46 @@ public class PlayerShoot : NetworkBehaviour
 
     }
 
+    //is called on the server when player shoots
+    [Command]
+    void CmdOnShoot()
+    {
+        RpcDoShootEffect();
+    }
+
+    //call for all clients to show player    shooting
+    [ClientRpc]
+    void RpcDoShootEffect()
+    {
+        _weaponManager.GetCurrentGraphics().MuzzleFlash.Play();
+    }
+
+    //called on server when player hits something
+    [Command]
+    void CmdOnHit(Vector3 pos, Vector3 normal)
+    {
+        RpcDoHitEffect(pos, normal);
+    }
+
+    //call for all clients to show when player hit something
+    [ClientRpc]
+    void RpcDoHitEffect(Vector3 pos, Vector3 normal)
+    {
+        GameObject hitEffect = Instantiate(_weaponManager.GetCurrentGraphics().HitEffectPrefab, pos, Quaternion.LookRotation(normal));
+        Destroy(hitEffect, 2f);
+    }
+
     [Client]
     private void Shoot()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
+        //call onshoot method on the server
+        CmdOnShoot();
+
         Debug.Log("Shoot is done");
         RaycastHit hit;
         if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out hit, _currentWeapon.range, _mask))
@@ -60,6 +98,9 @@ public class PlayerShoot : NetworkBehaviour
             {
                 CmdPlayerShot(player.ID, _currentWeapon.damage);
             }
+
+            //Call onhit method on server when we hit something
+            CmdOnHit(hit.point, hit.normal);
         }
     }
 

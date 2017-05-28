@@ -10,6 +10,7 @@ public class WeaponManager : NetworkBehaviour
 
 
     private PlayerWeapon _currentWeapon;
+    private WeaponGraphics _currentGraphics;
 
     void Start()
     {
@@ -21,6 +22,11 @@ public class WeaponManager : NetworkBehaviour
         return _currentWeapon;
     }
 
+    public WeaponGraphics GetCurrentGraphics()
+    {
+        return _currentGraphics;
+    }
+
     private void EquipWeapon(PlayerWeapon _newWeapon)
     {
         _currentWeapon = _newWeapon;
@@ -28,9 +34,16 @@ public class WeaponManager : NetworkBehaviour
         GameObject weaponIns = Instantiate(_newWeapon.graphics, _weaponHolder.position, _weaponHolder.rotation);
         weaponIns.transform.SetParent(_weaponHolder);
 
+        _currentGraphics = weaponIns.GetComponent<WeaponGraphics>();
+
+        if (_currentGraphics == null)
+        {
+            Debug.Log("WeaponManager: no weapon graphics component on the object " + weaponIns.name);
+        }
+
         if (isLocalPlayer)
         {
-            weaponIns.layer = LayerMask.NameToLayer(weaponLayerName);
+            Util.SetLayerRecursively(weaponIns, LayerMask.NameToLayer(weaponLayerName));
         }
     }
 
