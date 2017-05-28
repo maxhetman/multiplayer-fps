@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using MarchingBytes;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -74,8 +76,15 @@ public class PlayerShoot : NetworkBehaviour
     [ClientRpc]
     void RpcDoHitEffect(Vector3 pos, Vector3 normal)
     {
-        GameObject hitEffect = Instantiate(_weaponManager.GetCurrentGraphics().HitEffectPrefab, pos, Quaternion.LookRotation(normal));
-        Destroy(hitEffect, 2f);
+        GameObject hitEffect =
+            EasyObjectPool.instance.GetObjectFromPool("Bullets", pos, Quaternion.LookRotation(normal));
+        StartCoroutine(ReturnToPool(hitEffect));
+    }
+
+    private IEnumerator ReturnToPool(GameObject obj)
+    {
+        yield return new WaitForSeconds(1.0f);
+        EasyObjectPool.instance.ReturnObjectToPool(obj);
     }
 
     [Client]
