@@ -5,10 +5,11 @@ using UnityEngine.Networking;
 public class PlayerShoot : NetworkBehaviour
 {
 
-    public PlayerWeapon Weapon;
-
+    [SerializeField] private string weaponLayerName = "Weapon";
+    [SerializeField] private PlayerWeapon Weapon;
     [SerializeField] private Camera _cam;
     [SerializeField] private LayerMask _mask;
+    [SerializeField] private GameObject weaponGFX;
 
     void Start()
     {
@@ -17,6 +18,8 @@ public class PlayerShoot : NetworkBehaviour
             Debug.Log("PlayerShoot: No Camera Found!!");
             this.enabled = false;
         }
+
+        weaponGFX.layer = LayerMask.NameToLayer(weaponLayerName);
     }
 
     void Update()

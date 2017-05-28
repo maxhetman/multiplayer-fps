@@ -4,6 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(ConfigurableJoint))]
+[RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
     #region Variables
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour
 
     private PlayerMotor _motor;
     private ConfigurableJoint _joint;
+    private Animator _animator;
 
     #endregion
 
@@ -25,21 +27,25 @@ public class PlayerController : MonoBehaviour
     {
         _motor = GetComponent<PlayerMotor>();
         _joint = GetComponent<ConfigurableJoint>();
+        _animator = GetComponent<Animator>();
         SetJointSettings(_jointSpring);
     }
 
     void Update()
     {
         //move
-        float xMove = Input.GetAxisRaw("Horizontal");
-        float zMove = Input.GetAxisRaw("Vertical");
+        float xMove = Input.GetAxis("Horizontal");
+        float zMove = Input.GetAxis("Vertical");
 
         Vector3 moveHorizontal = transform.right * xMove;
         Vector3 moveVertical = transform.forward * zMove;
 
-        Vector3 velocity = (moveVertical + moveHorizontal).normalized * _speed;
+        Vector3 velocity = (moveVertical + moveHorizontal) * _speed;
 
         _motor.Move(velocity);
+
+        //animator movement
+        _animator.SetFloat("ForwardVelocity", zMove);
 
         //turning around
         float yRot = Input.GetAxis("Mouse X");
