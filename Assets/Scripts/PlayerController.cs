@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _speed = 5f;
     [SerializeField] private float _lookSensitivity = 4f;
     [SerializeField] private float _thrusterForce = 1000f;
+    [SerializeField] private float _thrusterFuelBurnSpeed = 1f;
+    [SerializeField] private float _thrusterFuelRegenSpeed = 0.3f;
+    private float _thrusterFuelAmount = 1f;
+    [SerializeField] private LayerMask _envorinmentMask;
 
     [Header("Joint options")]
     [SerializeField] private float _jointSpring = 20f;
@@ -65,19 +69,47 @@ public class PlayerController : MonoBehaviour
 
         //thruster force
         Vector3 thrusterForce = Vector3.zero;
-        if (Input.GetButton("Jump"))
+        if (Input.GetButton("Jump") && _thrusterFuelAmount > 0)
         {
-            thrusterForce = transform.up * _thrusterForce;
-            SetJointSettings(0f);
+            _thrusterFuelAmount -= _thrusterFuelBurnSpeed * Time.deltaTime;
+
+            if (_thrusterFuelAmount >= 0.01f)
+            {
+                thrusterForce = transform.up * _thrusterForce;
+                SetJointSettings(0f);
+            }
+
         }
         else
         {
+            _thrusterFuelAmount += _thrusterFuelRegenSpeed * Time.deltaTime;
             SetJointSettings(_jointSpring);
         }
 
+        _thrusterFuelAmount = Mathf.Clamp(_thrusterFuelAmount, 0f, 1f);
+
         _motor.ApplyThruster(thrusterForce);
     }
+
+    //Set target position for spring when flying over objects
+    void FixedUpdate()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 100f, _envorinmentMask))
+        {
+            _joint.targetPosition = new Vector3(0f, -hit.point.y, 0f);
+        }
+        else
+        {
+            _joint.targetPosition = new Vector3(0f, 0f, 0f);
+        }
+    }
 #endregion
+
+    public float GetThrusterFuelAmount()
+    {
+        return _thrusterFuelAmount;
+    }
 
     private void SetJointSettings(float jSpring)
     {

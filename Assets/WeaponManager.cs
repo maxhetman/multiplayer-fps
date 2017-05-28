@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 public class WeaponManager : NetworkBehaviour
 {
 
+    #region Variables
     [SerializeField] private PlayerWeapon _primaryWeapon;
     [SerializeField] private string weaponLayerName = "Weapon";
     [SerializeField] private Transform _weaponHolder;
@@ -11,7 +12,7 @@ public class WeaponManager : NetworkBehaviour
 
     private PlayerWeapon _currentWeapon;
     private WeaponGraphics _currentGraphics;
-
+    #endregion
     void Start()
     {
         EquipWeapon(_primaryWeapon);
