@@ -15,6 +15,7 @@ public class Player : NetworkBehaviour {
     [SerializeField] private GameObject[] _disableGameObjectsOnDeath;
     [SerializeField] private GameObject _spawnEffect;
 
+    private bool _firstSetup = true;
     [SyncVar]
     private bool _isDead = false;
 
@@ -26,24 +27,48 @@ public class Player : NetworkBehaviour {
     private int _currentHealth;
     #endregion
 
-    void Update()
+    //void Update()
+    //{
+    //    if (!isLocalPlayer)
+    //    {
+    //        return;
+    //    }
+    //    if (Input.GetKey(KeyCode.Escape))
+    //    {
+    //        RpcTakeDamage(99999);
+    //    }
+    //}
+
+    public void SetupPlayer()
     {
-        if (!isLocalPlayer)
+
+        if (isLocalPlayer)
         {
-            return;
+            //Switch from scene to player camera    
+            GameManager.Instance.SetSceneCameraState(false);
+            GetComponent<PlayerSetup>().playerUIInstance.SetActive(true);
         }
-        if (Input.GetKey(KeyCode.Escape))
-        {
-            RpcTakeDamage(99999);
-        }
+
+        CmdBroadcastNewPlayerSetup();
     }
 
-    public void Setup()
+    [Command]
+    private void CmdBroadcastNewPlayerSetup()
     {
-        wasEnabled = new bool[disableOnDeath.Length];
-        for (int i = 0; i < wasEnabled.Length; i++)
+        RpcSetupPlayerOnAllClients();
+    }
+
+    [ClientRpc]
+    private void RpcSetupPlayerOnAllClients()
+    {
+
+        if (_firstSetup)
         {
-            wasEnabled[i] = disableOnDeath[i].enabled;
+            wasEnabled = new bool[disableOnDeath.Length];
+            for (int i = 0; i < wasEnabled.Length; i++)
+            {
+                wasEnabled[i] = disableOnDeath[i].enabled;
+            }
         }
         SetDefaults();
     }
@@ -71,13 +96,6 @@ public class Player : NetworkBehaviour {
         if (coll != null)
         {
             coll.enabled = true;
-        }
-
-        //Switch camera from scene to player
-        if (isLocalPlayer)
-        {
-            GameManager.Instance.SetSceneCameraState(false);
-            GetComponent<PlayerSetup>().playerUIInstance.SetActive(true);
         }
 
         //Create spawn effect
@@ -148,7 +166,9 @@ public class Player : NetworkBehaviour {
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
 
-        SetDefaults();
+        yield return new WaitForSeconds(0.1f);
+
+        SetupPlayer();
 
     }
 }

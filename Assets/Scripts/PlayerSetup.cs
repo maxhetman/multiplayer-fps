@@ -46,9 +46,11 @@ public class PlayerSetup : NetworkBehaviour
                 return;
             }
             ui.SetController(GetComponent<PlayerController>());
+
+            GetComponent<Player>().SetupPlayer();
+
         }
 
-        GetComponent<Player>().Setup();
     }
 
     public override void OnStartClient()
@@ -77,7 +79,11 @@ public class PlayerSetup : NetworkBehaviour
     {
         Destroy(playerUIInstance);
 
-        GameManager.Instance.SetSceneCameraState(true);
+        Debug.Log("On disable called by : " + GetComponent<Player>().ID);
+        if (isLocalPlayer)
+        {
+            GameManager.Instance.SetSceneCameraState(true);
+        }
 
         string id = GetComponent<Player>().ID;
         GameManager.Instance.UnregisterPlayer(id);
