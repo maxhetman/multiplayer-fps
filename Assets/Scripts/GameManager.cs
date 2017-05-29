@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     //All players in game
     private Dictionary<string, Player> _players = new Dictionary<string, Player>();
 
+    [SerializeField] private GameObject _sceneCamera;
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -21,6 +22,17 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
+    }
+
+    public void SetSceneCameraState(bool state)
+    {
+        if (_sceneCamera == null)
+        {
+            Debug.LogError("GameManager: No scene camera found");
+            return;
+        }
+
+        _sceneCamera.SetActive(state);
     }
 
     #region Player tracking

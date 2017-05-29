@@ -14,13 +14,13 @@ public class PlayerSetup : NetworkBehaviour
 
     [SerializeField] private GameObject playerGraphics;
     [SerializeField] private GameObject playerUIPrefab;
-    private GameObject playerUIInstance;
+
+    [HideInInspector]
+    public GameObject playerUIInstance;
 
     private const string _remoteLayerName = "RemotePlayer";
 
     private const string PLAYER_ID_PREFIX = "Player";
-
-    private Camera _sceneCamera;
 
     void Start()
     {
@@ -31,12 +31,6 @@ public class PlayerSetup : NetworkBehaviour
         }
         else
         {
-            _sceneCamera = Camera.main;
-            if (_sceneCamera != null)
-            {
-                _sceneCamera.gameObject.SetActive(false);
-            }
-
             //disable player graphics for local player
             Util.SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontDrawLayerName));
 
@@ -82,10 +76,8 @@ public class PlayerSetup : NetworkBehaviour
     void OnDisable()
     {
         Destroy(playerUIInstance);
-        if (_sceneCamera != null)
-        {
-            _sceneCamera.gameObject.SetActive(true);
-        }
+
+        GameManager.Instance.SetSceneCameraState(true);
 
         string id = GetComponent<Player>().ID;
         GameManager.Instance.UnregisterPlayer(id);

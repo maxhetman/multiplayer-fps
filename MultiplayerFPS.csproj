@@ -78,6 +78,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="MultiplayerFPS.Plugins.csproj">
+      <Project>{F964B250-5F15-313B-EFC5-5017E9B681A4}</Project>
+      <Name>MultiplayerFPS.Plugins</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Assets\EasyObjectPool\Core\EasyObjectPool.cs" />
     <Compile Include="Assets\EasyObjectPool\Core\PoolObject.cs" />
     <Compile Include="Assets\PlayerUI.cs" />
