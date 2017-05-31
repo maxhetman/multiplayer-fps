@@ -10,7 +10,21 @@ public class MenuBtn : MonoBehaviour {
     {
         GetComponent<Button>().onClick.AddListener((() =>
         {
-            NetworkManager.singleton.StopClient();
+            Player player = GetComponentInParent<PlayerUI>().Player;
+            if (player == null)
+            {
+                Debug.Log("MenuBtn: player is null!");
+                return;
+            }
+            //host
+            if (player.isServer && player.isClient)
+            {
+                NetworkManager.singleton.StopHost();
+            }
+            else if (player.isClient)
+            {
+                NetworkManager.singleton.StopClient();
+            }      
         }));
     }
 }

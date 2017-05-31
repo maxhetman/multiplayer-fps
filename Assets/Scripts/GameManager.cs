@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +12,9 @@ public class GameManager : MonoBehaviour
     //All players in game
     private Dictionary<string, Player> _players = new Dictionary<string, Player>();
 
+    public bool IsMenuOpened = false;
     [SerializeField] private GameObject _sceneCamera;
+
     void Awake()
     {
         if (Instance != null && Instance != this)

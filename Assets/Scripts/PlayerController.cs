@@ -37,6 +37,21 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.IsMenuOpened)
+        {
+            DisablePlayerMovement();
+            if (Cursor.lockState != CursorLockMode.None)
+            {
+                Cursor.lockState = CursorLockMode.None;
+            }
+            return;
+        }
+
+        if (Cursor.lockState != CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        
         //move
         float xMove = Input.GetAxis("Horizontal");
         float zMove = Input.GetAxis("Vertical");
@@ -91,6 +106,16 @@ public class PlayerController : MonoBehaviour
         _motor.ApplyThruster(thrusterForce);
     }
 
+    private void DisablePlayerMovement()
+    {
+        _thrusterFuelAmount += _thrusterFuelRegenSpeed * Time.deltaTime;
+        _thrusterFuelAmount = Mathf.Clamp(_thrusterFuelAmount, 0f, 1f);
+        _motor.Move(Vector3.zero);
+        _motor.Rotate(Vector3.zero);
+        _motor.RotateCamera(0f);
+        _motor.ApplyThruster(Vector3.zero);
+        SetJointSettings(_jointSpring);
+    }
     //Set target position for spring when flying over objects
     void FixedUpdate()
     {

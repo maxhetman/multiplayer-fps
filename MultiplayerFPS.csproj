@@ -88,7 +88,6 @@
     <Compile Include="Assets\EasyObjectPool\Core\PoolObject.cs" />
     <Compile Include="Assets\PlayerUI.cs" />
     <Compile Include="Assets\Scripts\CloseGameBtn.cs" />
-    <Compile Include="Assets\Scripts\EscapeMenu.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\HostBtn.cs" />
     <Compile Include="Assets\Scripts\HostJoinManager.cs" />

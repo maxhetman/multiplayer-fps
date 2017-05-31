@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -35,15 +36,8 @@ public class Player : NetworkBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // RpcTakeDamage(99999);
-            ShowEscapeWindow();
-
+            GetComponent<PlayerSetup>().playerUIInstance.GetComponent<PlayerUI>().ToggleEscapeMenu();
         }
-    }
-
-    private void ShowEscapeWindow()
-    {
-        GetComponent<PlayerSetup>().playerUIInstance.GetComponent<PlayerUI>().EscapeMenu.SetActive(true);
     }
 
     public void SetupPlayer()
@@ -175,7 +169,7 @@ public class Player : NetworkBehaviour {
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.3f);
 
         SetupPlayer();
 

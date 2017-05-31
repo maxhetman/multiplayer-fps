@@ -30,6 +30,11 @@ public class PlayerShoot : NetworkBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.IsMenuOpened)
+        {
+            return;
+        }
+
         _currentWeapon = _weaponManager.GetCurrentWeapon();
         if (_currentWeapon.fireRate <= 0f)
         {

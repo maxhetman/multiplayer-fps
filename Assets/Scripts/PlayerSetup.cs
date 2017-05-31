@@ -45,6 +45,7 @@ public class PlayerSetup : NetworkBehaviour
                 return;
             }
             ui.SetController(GetComponent<PlayerController>());
+            ui.Player = GetComponent<Player>();
 
             GetComponent<Player>().SetupPlayer();
 
