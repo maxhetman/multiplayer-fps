@@ -6,6 +6,7 @@ public class PlayerUI : MonoBehaviour
 {
 
     [SerializeField] private RectTransform _thrusterFuelFill;
+    public GameObject EscapeMenu;
 
     private PlayerController _controller;
 

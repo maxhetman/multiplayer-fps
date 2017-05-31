@@ -27,17 +27,24 @@ public class Player : NetworkBehaviour {
     private int _currentHealth;
     #endregion
 
-    //void Update()
-    //{
-    //    if (!isLocalPlayer)
-    //    {
-    //        return;
-    //    }
-    //    if (Input.GetKey(KeyCode.Escape))
-    //    {
-    //        RpcTakeDamage(99999);
-    //    }
-    //}
+    void Update()
+    {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // RpcTakeDamage(99999);
+            ShowEscapeWindow();
+
+        }
+    }
+
+    private void ShowEscapeWindow()
+    {
+        GetComponent<PlayerSetup>().playerUIInstance.GetComponent<PlayerUI>().EscapeMenu.SetActive(true);
+    }
 
     public void SetupPlayer()
     {
@@ -61,6 +68,7 @@ public class Player : NetworkBehaviour {
     [ClientRpc]
     private void RpcSetupPlayerOnAllClients()
     {
+        Debug.Log("RPC SETUP CALLED");
 
         if (_firstSetup)
         {
@@ -69,6 +77,7 @@ public class Player : NetworkBehaviour {
             {
                 wasEnabled[i] = disableOnDeath[i].enabled;
             }
+            _firstSetup = false;
         }
         SetDefaults();
     }

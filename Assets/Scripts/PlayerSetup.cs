@@ -10,7 +10,6 @@ public class PlayerSetup : NetworkBehaviour
     private Behaviour[] componentsToDisable;
 
     [SerializeField] private string dontDrawLayerName = "DontDraw";
-    [SerializeField] private string weaponLayerName = "Weapon"; 
 
     [SerializeField] private GameObject playerGraphics;
     [SerializeField] private GameObject playerUIPrefab;
@@ -80,6 +79,7 @@ public class PlayerSetup : NetworkBehaviour
         Destroy(playerUIInstance);
 
         Debug.Log("On disable called by : " + GetComponent<Player>().ID);
+
         if (isLocalPlayer)
         {
             GameManager.Instance.SetSceneCameraState(true);
@@ -88,4 +88,5 @@ public class PlayerSetup : NetworkBehaviour
         string id = GetComponent<Player>().ID;
         GameManager.Instance.UnregisterPlayer(id);
     }
+
 }
