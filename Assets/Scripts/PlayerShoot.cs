@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 
 [RequireComponent(typeof(WeaponManager))]
 [RequireComponent(typeof(Player))]
+[RequireComponent(typeof(AudioSource))]
 public class PlayerShoot : NetworkBehaviour
 {
 
@@ -14,6 +15,7 @@ public class PlayerShoot : NetworkBehaviour
 
 
 
+    private AudioSource _audioSource;
     private PlayerWeapon _currentWeapon;
     private WeaponManager _weaponManager;
     
@@ -26,6 +28,7 @@ public class PlayerShoot : NetworkBehaviour
         }
 
         _weaponManager = GetComponent<WeaponManager>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -78,6 +81,7 @@ public class PlayerShoot : NetworkBehaviour
     void RpcDoShootEffect()
     {
         _weaponManager.GetCurrentGraphics().MuzzleFlash.Play();
+       _audioSource.Play();
     }
 
     //called on server when player hits something
