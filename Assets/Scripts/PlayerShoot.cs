@@ -30,12 +30,22 @@ public class PlayerShoot : NetworkBehaviour
 
     void Update()
     {
+        _currentWeapon = _weaponManager.GetCurrentWeapon();
+
         if (GameManager.Instance.IsMenuOpened)
         {
             return;
         }
 
-        _currentWeapon = _weaponManager.GetCurrentWeapon();
+        if (_currentWeapon.bullets < _currentWeapon.maxBullets)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                _weaponManager.Reload();
+                return;
+            }
+        }
+
         if (_currentWeapon.fireRate <= 0f)
         {
             if (Input.GetButtonDown("Fire1"))
@@ -95,15 +105,24 @@ public class PlayerShoot : NetworkBehaviour
     [Client]
     private void Shoot()
     {
-        if (!isLocalPlayer)
+        if (!isLocalPlayer && _weaponManager.IsReloading == false)
         {
             return;
         }
 
+        if (_currentWeapon.bullets <= 0)
+        {
+            _weaponManager.Reload();
+            return;
+        }
+
+
+        _currentWeapon.bullets--;
+        Debug.Log("Remaining bullets : " + _currentWeapon.bullets);
+
         //call onshoot method on the server
         CmdOnShoot();
 
-        Debug.Log("Shoot is done");
         RaycastHit hit;
         if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out hit, _currentWeapon.range, _mask))
         {

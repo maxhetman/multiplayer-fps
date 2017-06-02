@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Networking;
 
 public class WeaponManager : NetworkBehaviour
@@ -12,7 +13,9 @@ public class WeaponManager : NetworkBehaviour
 
     private PlayerWeapon _currentWeapon;
     private WeaponGraphics _currentGraphics;
+    public bool IsReloading = false;
     #endregion
+
     void Start()
     {
         EquipWeapon(_primaryWeapon);
@@ -26,6 +29,26 @@ public class WeaponManager : NetworkBehaviour
     public WeaponGraphics GetCurrentGraphics()
     {
         return _currentGraphics;
+    }
+
+    public void Reload()
+    {
+        if (IsReloading)
+            return;
+        StartCoroutine(ReloadCoroutine());
+
+
+    }
+
+    private IEnumerator ReloadCoroutine()
+    {
+        IsReloading = true;
+
+        CmdOnReload();
+        yield return new WaitForSeconds(_currentWeapon.reloadTime);
+        _currentWeapon.bullets = _currentWeapon.maxBullets;
+
+        IsReloading = false;
     }
 
     private void EquipWeapon(PlayerWeapon _newWeapon)
@@ -45,6 +68,22 @@ public class WeaponManager : NetworkBehaviour
         if (isLocalPlayer)
         {
             Util.SetLayerRecursively(weaponIns, LayerMask.NameToLayer(weaponLayerName));
+        }
+    }
+
+    [Command]
+    void CmdOnReload()
+    {
+        RpcOnReload();
+    }
+
+    [ClientRpc]
+    void RpcOnReload()
+    {
+        Animator anim = _currentGraphics.GetComponent<Animator>();
+        if (anim != null)
+        {
+            anim.SetTrigger("Reload");
         }
     }
 
