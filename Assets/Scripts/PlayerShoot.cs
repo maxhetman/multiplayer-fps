@@ -6,7 +6,6 @@ using UnityEngine.Networking;
 
 [RequireComponent(typeof(WeaponManager))]
 [RequireComponent(typeof(Player))]
-[RequireComponent(typeof(AudioSource))]
 public class PlayerShoot : NetworkBehaviour
 {
 
@@ -80,8 +79,10 @@ public class PlayerShoot : NetworkBehaviour
     [ClientRpc]
     void RpcDoShootEffect()
     {
-        _weaponManager.GetCurrentGraphics().MuzzleFlash.Play();
-       _audioSource.Play();
+        Debug.Log("here");
+        Debug.Log(_weaponManager.GetCurrentWeapon().MuzzleFlash);
+        _weaponManager.GetCurrentWeapon().MuzzleFlash.Play();
+       _audioSource.PlayOneShot(_weaponManager.GetCurrentWeapon().shootSound);
     }
 
     //called on server when player hits something
@@ -119,6 +120,8 @@ public class PlayerShoot : NetworkBehaviour
             _weaponManager.Reload();
             return;
         }
+
+
 
         _currentWeapon.bullets--;
         Debug.Log("Remaining bullets : " + _currentWeapon.bullets);

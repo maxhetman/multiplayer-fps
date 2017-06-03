@@ -12,7 +12,6 @@ public class WeaponManager : NetworkBehaviour
 
 
     private PlayerWeapon _currentWeapon;
-    private WeaponGraphics _currentGraphics;
     public bool IsReloading = false;
     #endregion
 
@@ -24,11 +23,6 @@ public class WeaponManager : NetworkBehaviour
     public PlayerWeapon GetCurrentWeapon()
     {
         return _currentWeapon;
-    }
-
-    public WeaponGraphics GetCurrentGraphics()
-    {
-        return _currentGraphics;
     }
 
     public void Reload()
@@ -53,17 +47,13 @@ public class WeaponManager : NetworkBehaviour
 
     private void EquipWeapon(PlayerWeapon _newWeapon)
     {
-        _currentWeapon = _newWeapon;
 
         GameObject weaponIns = Instantiate(_newWeapon.graphics, _weaponHolder.position, _weaponHolder.rotation);
+        _currentWeapon = weaponIns.GetComponent<PlayerWeapon>();
+
         weaponIns.transform.SetParent(_weaponHolder);
 
-        _currentGraphics = weaponIns.GetComponent<WeaponGraphics>();
 
-        if (_currentGraphics == null)
-        {
-            Debug.Log("WeaponManager: no weapon graphics component on the object " + weaponIns.name);
-        }
 
         if (isLocalPlayer)
         {
@@ -80,8 +70,8 @@ public class WeaponManager : NetworkBehaviour
     [ClientRpc]
     void RpcOnReload()
     {
-        Animator anim = _currentGraphics.GetComponent<Animator>();
-        if (anim != null)
+        Animator anim = _currentWeapon.GetComponent<Animator>();
+            if (anim != null)
         {
             anim.SetTrigger("Reload");
         }
