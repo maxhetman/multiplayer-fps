@@ -44,9 +44,7 @@ public class PlayerSetup : NetworkBehaviour
                 Debug.LogError("PlayerSetup: no ui controller on player ui");
                 return;
             }
-            ui.SetController(GetComponent<PlayerController>());
-            ui.Player = GetComponent<Player>();
-
+            ui.SetPlayer(GetComponent<Player>());
             GetComponent<Player>().SetupPlayer();
 
         }

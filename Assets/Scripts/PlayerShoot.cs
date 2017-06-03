@@ -109,7 +109,7 @@ public class PlayerShoot : NetworkBehaviour
     [Client]
     private void Shoot()
     {
-        if (!isLocalPlayer && _weaponManager.IsReloading == false)
+        if (!isLocalPlayer || _weaponManager.IsReloading)
         {
             return;
         }
@@ -119,7 +119,6 @@ public class PlayerShoot : NetworkBehaviour
             _weaponManager.Reload();
             return;
         }
-
 
         _currentWeapon.bullets--;
         Debug.Log("Remaining bullets : " + _currentWeapon.bullets);
@@ -138,6 +137,11 @@ public class PlayerShoot : NetworkBehaviour
 
             //Call onhit method on server when we hit something
             CmdOnHit(hit.point, hit.normal);
+        }
+
+        if (_currentWeapon.bullets <= 0)
+        {
+            _weaponManager.Reload();
         }
     }
 

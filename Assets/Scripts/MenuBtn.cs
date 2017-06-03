@@ -10,7 +10,7 @@ public class MenuBtn : MonoBehaviour {
     {
         GetComponent<Button>().onClick.AddListener((() =>
         {
-            Player player = GetComponentInParent<PlayerUI>().Player;
+            Player player = GetComponentInParent<PlayerUI>().GetPlayer();
             if (player == null)
             {
                 Debug.Log("MenuBtn: player is null!");

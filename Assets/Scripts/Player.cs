@@ -40,6 +40,10 @@ public class Player : NetworkBehaviour {
         }
     }
 
+    public float GetHealthPct()
+    {
+        return (float) _currentHealth / _maxHealth;
+    }
     public void SetupPlayer()
     {
 
