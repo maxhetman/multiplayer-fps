@@ -32,7 +32,7 @@ public class PlayerSetup : NetworkBehaviour
         {
             //disable player graphics for local player
             Util.SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontDrawLayerName));
-
+            
             //create player UI
             playerUIInstance = Instantiate(playerUIPrefab);
             playerUIInstance.name = playerUIPrefab.name;

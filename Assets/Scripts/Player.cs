@@ -3,12 +3,11 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
 
-[RequireComponent(typeof(PlayerSetup))]
 public class Player : NetworkBehaviour {
 
     #region Variables
     public string ID { get; set; }
-
+    [SyncVar] public string Name;
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private Behaviour[] disableOnDeath;
     private bool[] wasEnabled;
@@ -52,22 +51,23 @@ public class Player : NetworkBehaviour {
             //Switch from scene to player camera    
             GameManager.Instance.SetSceneCameraState(false);
             GetComponent<PlayerSetup>().playerUIInstance.SetActive(true);
+            Name = PlayerPrefs.GetString("Player_name");
         }
 
-        CmdBroadcastNewPlayerSetup();
+        CmdBroadcastNewPlayerSetup(Name);
     }
 
     [Command]
-    private void CmdBroadcastNewPlayerSetup()
+    private void CmdBroadcastNewPlayerSetup(string playerName)
     {
-        RpcSetupPlayerOnAllClients();
+        RpcSetupPlayerOnAllClients(playerName);
     }
 
     [ClientRpc]
-    private void RpcSetupPlayerOnAllClients()
+    private void RpcSetupPlayerOnAllClients(string playerName)
     {
         Debug.Log("RPC SETUP CALLED");
-
+        Name = playerName;
         if (_firstSetup)
         {
             wasEnabled = new bool[disableOnDeath.Length];
